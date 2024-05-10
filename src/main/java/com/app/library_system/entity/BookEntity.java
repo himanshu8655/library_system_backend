@@ -15,29 +15,28 @@ public class BookEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long book_id;
-	
+
 	public String book_name;
-	
+
 	public String about_book;
-	
+
 	public String author;
-	
+
 	public String price;
-	
+
 	@Transient
 	public String file_url;
-	
+
 	@Column(length = 100000)
 	public byte[] file;
-	
-	
-	
-	public BookEntity(Long book_id, String book_name, String about_book, String author) {
+
+	public BookEntity(Long book_id, String book_name, String about_book, String author,String price) {
 		super();
 		this.book_id = book_id;
 		this.book_name = book_name;
 		this.about_book = about_book;
 		this.author = author;
+		this.price=price;
 	}
 
 	public BookEntity() {
@@ -86,5 +85,13 @@ public class BookEntity {
 	public void setFile_url(String file_url) {
 		this.file_url = file_url;
 	}
-	
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
 }
