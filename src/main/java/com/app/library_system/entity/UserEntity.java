@@ -1,5 +1,6 @@
 package com.app.library_system.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,9 +17,12 @@ public class UserEntity {
 	
 	public String name;
 	
-	public long phn_no;
+	public String phn_no;
 	
+    @Column(unique = true)
 	public String email_id;
+	
+	public String password;
 	
 	public UserEntity() {
 		// TODO Auto-generated constructor stub
@@ -36,11 +40,11 @@ public class UserEntity {
 		this.name = name;
 	}
 
-	public long getPhn_no() {
+	public String getPhn_no() {
 		return phn_no;
 	}
 
-	public void setPhn_no(long phn_no) {
+	public void setPhn_no(String phn_no) {
 		this.phn_no = phn_no;
 	}
 
@@ -50,6 +54,14 @@ public class UserEntity {
 
 	public void setEmail_id(String email_id) {
 		this.email_id = email_id;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

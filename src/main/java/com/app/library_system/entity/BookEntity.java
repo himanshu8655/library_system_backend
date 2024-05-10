@@ -22,6 +22,8 @@ public class BookEntity {
 	
 	public String author;
 	
+	public String price;
+	
 	@Transient
 	public String file_url;
 	
