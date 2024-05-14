@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.app.library_system.controller.UserLogin;
 import com.app.library_system.entity.UserEntity;
 import com.app.library_system.repository.UserRepo;
 import com.app.library_system.response_model.MessageModel;
+import com.app.library_system.response_model.UserLogin;
 
 @Service
 public class UserService {
@@ -53,6 +53,14 @@ public class UserService {
 
 	public Optional<UserEntity> getUserByID(Long uid) {
 		return repo_user.findById(uid);
+	}
+
+	public ResponseEntity getProfileById(long id) {
+		UserEntity user = repo_user.findById(id).orElse(null);
+		if(user==null) return getResponseEntity("User not found", HttpStatus.NOT_FOUND);
+		user.setPassword(null);
+		return getResponseEntity(user, HttpStatus.OK);
+				
 	}
 
 }

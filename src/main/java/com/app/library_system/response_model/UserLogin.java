@@ -1,4 +1,4 @@
-package com.app.library_system.controller;
+package com.app.library_system.response_model;
 
 public class UserLogin {
 	public String email_id;
