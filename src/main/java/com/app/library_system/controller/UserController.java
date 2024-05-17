@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.library_system.entity.UserEntity;
@@ -16,19 +17,18 @@ import com.app.library_system.response_model.MessageModel;
 import com.app.library_system.response_model.UserLogin;
 import com.app.library_system.service.UserService;
 
-@CrossOrigin(origins = "*")
 @RestController
 public class UserController {
 
 	@Autowired
 	UserService user_service;
 	
-	@PostMapping("/login")
+	@PostMapping("/api/auth/login")
 	public ResponseEntity login(@RequestBody UserLogin login){
 		return user_service.validateLogin(login);
 	}
 	
-	@PostMapping("/register")
+	@PostMapping("/api/auth/register")
 	public ResponseEntity<MessageModel> register(@RequestBody UserEntity user){
 		return user_service.register(user);
 	}
