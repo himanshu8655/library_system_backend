@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.library_system.entity.UserEntity;
+import com.app.library_system.response_model.LoginTokenResponse;
 import com.app.library_system.response_model.MessageModel;
 import com.app.library_system.response_model.UserLogin;
 import com.app.library_system.service.UserService;
@@ -24,7 +25,7 @@ public class UserController {
 	UserService user_service;
 	
 	@PostMapping("/api/auth/login")
-	public ResponseEntity login(@RequestBody UserLogin login){
+	public ResponseEntity<LoginTokenResponse> login(@RequestBody UserLogin login){
 		return user_service.validateLogin(login);
 	}
 	

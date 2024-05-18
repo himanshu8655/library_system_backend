@@ -28,8 +28,6 @@ public class JWTGenerator {
 				.setExpiration(expireDate)
 				.signWith(key,SignatureAlgorithm.HS512)
 				.compact();
-		System.out.println("New token :");
-		System.out.println(token);
 		return token;
 	}
 	public String getUsernameFromJWT(String token){
@@ -49,7 +47,7 @@ public class JWTGenerator {
 			.parseClaimsJws(token);
 			return true;
 		} catch (Exception ex) {
-			throw new AuthenticationCredentialsNotFoundException("JWT was exprired or incorrect");
+			return false;
 		}
 	}
 

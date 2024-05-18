@@ -46,14 +46,14 @@ public class UserService{
     @Autowired
     private JWTGenerator jwtGenerator;
 
-	public ResponseEntity validateLogin(UserLogin login) {
+	public ResponseEntity<LoginTokenResponse> validateLogin(UserLogin login) {
 		 Authentication authentication = authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(
 	                		login.getEmail_id(),
 	                		login.getPassword()));
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        String token = jwtGenerator.generateToken(authentication);
-	        return new ResponseEntity<>(new LoginTokenResponse(token,"Bearer","Login Success!"), HttpStatus.OK);
+	        return new ResponseEntity<LoginTokenResponse>(new LoginTokenResponse(token,"Bearer","Login Success!"), HttpStatus.OK);
 	}
 
 	public static ResponseEntity<MessageModel> getResponseEntity(String msg, HttpStatusCode code) {
