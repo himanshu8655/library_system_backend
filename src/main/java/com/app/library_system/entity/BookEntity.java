@@ -29,9 +29,14 @@ public class BookEntity {
 
 	@Column(length = 100000)
 	public byte[] file;
+	
+	@Column(length = 100000)
+	public byte[] thumbnail;
+	
+	@Transient
+	public String thumbnail_url;
 
 	public BookEntity(Long book_id, String book_name, String about_book, String author,String price) {
-		super();
 		this.book_id = book_id;
 		this.book_name = book_name;
 		this.about_book = about_book;
@@ -93,5 +98,23 @@ public class BookEntity {
 	public void setPrice(String price) {
 		this.price = price;
 	}
+
+	public byte[] getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(byte[] thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	public String getThumbnail_url() {
+		return thumbnail_url;
+	}
+
+	public void setThumbnail_url(String thumbnail_url) {
+		this.thumbnail_url = thumbnail_url;
+	}
+	
+		
 
 }
