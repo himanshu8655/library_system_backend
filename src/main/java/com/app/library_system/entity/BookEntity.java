@@ -14,18 +14,18 @@ public class BookEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long book_id;
+	public Long bookId;
 
-	public String book_name;
+	public String bookName;
 
-	public String about_book;
+	public String aboutBook;
 
 	public String author;
 
-	public String price;
+	public long price;
 
 	@Transient
-	public String file_url;
+	public String fileUrl;
 
 	@Column(length = 100000)
 	public byte[] file;
@@ -34,12 +34,12 @@ public class BookEntity {
 	public byte[] thumbnail;
 	
 	@Transient
-	public String thumbnail_url;
+	public String thumbnailUrl;
 
-	public BookEntity(Long book_id, String book_name, String about_book, String author,String price) {
-		this.book_id = book_id;
-		this.book_name = book_name;
-		this.about_book = about_book;
+	public BookEntity(Long bookId, String bookName, String aboutBook, String author,long price) {
+		this.bookId = bookId;
+		this.bookName = bookName;
+		this.aboutBook = aboutBook;
 		this.author = author;
 		this.price=price;
 	}
@@ -47,24 +47,23 @@ public class BookEntity {
 	public BookEntity() {
 	}
 
-	public Long getBook_id() {
-		return book_id;
+	public Long getBookId() {
+		return bookId;
+	}
+	public String getBookName() {
+		return bookName;
 	}
 
-	public String getBook_name() {
-		return book_name;
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
 	}
 
-	public void setBook_name(String book_name) {
-		this.book_name = book_name;
+	public String getAboutBook() {
+		return aboutBook;
 	}
 
-	public String getAbout_book() {
-		return about_book;
-	}
-
-	public void setAbout_book(String about_book) {
-		this.about_book = about_book;
+	public void setAboutBook(String aboutBook) {
+		this.aboutBook = aboutBook;
 	}
 
 	public String getAuthor() {
@@ -75,28 +74,28 @@ public class BookEntity {
 		this.author = author;
 	}
 
+	public long getPrice() {
+		return price;
+	}
+
+	public void setPrice(long price) {
+		this.price = price;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
 	public byte[] getFile() {
 		return file;
 	}
 
 	public void setFile(byte[] file) {
 		this.file = file;
-	}
-
-	public String getFile_url() {
-		return file_url;
-	}
-
-	public void setFile_url(String file_url) {
-		this.file_url = file_url;
-	}
-
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		this.price = price;
 	}
 
 	public byte[] getThumbnail() {
@@ -107,14 +106,15 @@ public class BookEntity {
 		this.thumbnail = thumbnail;
 	}
 
-	public String getThumbnail_url() {
-		return thumbnail_url;
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
 	}
 
-	public void setThumbnail_url(String thumbnail_url) {
-		this.thumbnail_url = thumbnail_url;
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
 	}
-	
+
+
 		
 
 }

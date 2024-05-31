@@ -25,7 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.library_system.entity.UserEntity;
-import com.app.library_system.repository.UserRepo;
+import com.app.library_system.repository.UserRepository;
 import com.app.library_system.response_model.LoginTokenResponse;
 import com.app.library_system.response_model.MessageModel;
 import com.app.library_system.response_model.UserLogin;
@@ -35,7 +35,7 @@ import com.app.library_system.security.JWTGenerator;
 public class UserService{
 
 	@Autowired
-	public UserRepo repo_user;
+	public UserRepository repo_user;
 	
     @Autowired
     private PasswordEncoder passwordEncoder;

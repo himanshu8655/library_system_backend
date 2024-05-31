@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -16,6 +17,11 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -25,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.app.library_system.entity.BookEntity;
-import com.app.library_system.repository.LibraryRepo;
+import com.app.library_system.repository.LibraryRepository;
 import com.app.library_system.response_model.MessageModel;
 import com.app.library_system.utils.AppStrings;
 
@@ -35,7 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class LibraryService {
 
 	@Autowired
-	public LibraryRepo repo_library;
+	public LibraryRepository repo_library;
 
 //	@Autowired(required = true)
 //	private HttpServletRequest request;
@@ -45,7 +51,7 @@ public class LibraryService {
 		if (book == null)
 			return getResponseEntity("No Book Found!", HttpStatus.NOT_FOUND);
 		book.setFile(null);
-		book.setFile_url(getBaseUrl(request) + AppStrings.ENDPOINT_API+AppStrings.ENDPOINT_BOOK+"/file/" + book.getBook_id());
+		book.setFileUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API+AppStrings.ENDPOINT_BOOK+"/file/" + book.getBookId());
 		return new ResponseEntity<BookEntity>(book, HttpStatus.OK);
 	}
 
@@ -101,16 +107,28 @@ public class LibraryService {
 		}
 	}
 
-	public List<BookEntity> getAll(HttpServletRequest request) {
-		List<BookEntity> books = repo_library.findAll();
-		books.parallelStream().forEach(book -> {
-			book.setFile_url(getBaseUrl(request) + AppStrings.ENDPOINT_API+AppStrings.ENDPOINT_BOOK+"/file/" + book.getBook_id());
-			book.setFile(null);
-			book.setThumbnail_url(getBaseUrl(request) + AppStrings.ENDPOINT_API+AppStrings.ENDPOINT_BOOK+"/thumbnail/" + book.getBook_id());
-			book.setThumbnail(null);
-		});
-		return books;
+	public Page<BookEntity> getAll(HttpServletRequest request, int page, int size, String sortBy, String sortDirection) {
+	    Sort sort = Sort.by(sortBy);
+	    if (sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())) {
+	        sort = sort.ascending();
+	    } else if (sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+	        sort = sort.descending();
+	    }
+
+	    Pageable pageable = PageRequest.of(page, size,sort);
+	    Page<BookEntity> booksPage = repo_library.findAll(pageable);
+
+	    List<BookEntity> modifiedBooks = booksPage.getContent().stream().map(book -> {
+	        book.setFileUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK + "/file/" + book.getBookId());
+	        book.setFile(null); // Clear file to save memory
+	        book.setThumbnailUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK + "/thumbnail/" + book.getBookId());
+	        book.setThumbnail(null); // Clear thumbnail to save memory
+	        return book;
+	    }).collect(Collectors.toList());
+
+	    return new PageImpl<>(modifiedBooks, pageable, booksPage.getTotalElements());
 	}
+
 
 	public static ResponseEntity<MessageModel> getResponseEntity(String msg, HttpStatusCode code) {
 		return new ResponseEntity<MessageModel>(new MessageModel(msg), code);
