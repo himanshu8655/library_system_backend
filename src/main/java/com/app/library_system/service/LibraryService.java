@@ -51,7 +51,8 @@ public class LibraryService {
 		if (book == null)
 			return getResponseEntity("No Book Found!", HttpStatus.NOT_FOUND);
 		book.setFile(null);
-		book.setFileUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API+AppStrings.ENDPOINT_BOOK+"/file/" + book.getBookId());
+		book.setFileUrl(
+				getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK + "/file/" + book.getBookId());
 		return new ResponseEntity<BookEntity>(book, HttpStatus.OK);
 	}
 
@@ -68,7 +69,7 @@ public class LibraryService {
 
 		return new ResponseEntity<byte[]>(book.getFile(), headers, HttpStatus.OK);
 	}
-	
+
 	public ResponseEntity<byte[]> getThumbnail(Long id) {
 		BookEntity book = repo_library.findById(id).orElse(null);
 
@@ -77,7 +78,6 @@ public class LibraryService {
 
 		return new ResponseEntity<byte[]>(book.getThumbnail(), headers, HttpStatus.OK);
 	}
-
 
 	public ResponseEntity<MessageModel> add(BookEntity book, MultipartFile file) {
 		if (file == null || file.getSize() == 0)
@@ -91,7 +91,7 @@ public class LibraryService {
 			PDFRenderer pdfRenderer = new PDFRenderer(doc);
 			BufferedImage image = pdfRenderer.renderImage(0);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(image,AppStrings.FORMAT_PNG, baos);
+			ImageIO.write(image, AppStrings.FORMAT_PNG, baos);
 			book.setThumbnail(baos.toByteArray());
 			repo_library.save(book);
 		} catch (Exception e) {
@@ -107,28 +107,30 @@ public class LibraryService {
 		}
 	}
 
-	public Page<BookEntity> getAll(HttpServletRequest request, int page, int size, String sortBy, String sortDirection) {
-	    Sort sort = Sort.by(sortBy);
-	    if (sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())) {
-	        sort = sort.ascending();
-	    } else if (sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
-	        sort = sort.descending();
-	    }
+	public Page<BookEntity> getAll(HttpServletRequest request, int page, int size, String sortBy,
+			String sortDirection) {
+		Sort sort = Sort.by(sortBy);
+		if (sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())) {
+			sort = sort.ascending();
+		} else if (sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+			sort = sort.descending();
+		}
 
-	    Pageable pageable = PageRequest.of(page, size,sort);
-	    Page<BookEntity> booksPage = repo_library.findAll(pageable);
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Page<BookEntity> booksPage = repo_library.findAll(pageable);
 
-	    List<BookEntity> modifiedBooks = booksPage.getContent().stream().map(book -> {
-	        book.setFileUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK + "/file/" + book.getBookId());
-	        book.setFile(null); // Clear file to save memory
-	        book.setThumbnailUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK + "/thumbnail/" + book.getBookId());
-	        book.setThumbnail(null); // Clear thumbnail to save memory
-	        return book;
-	    }).collect(Collectors.toList());
+		List<BookEntity> modifiedBooks = booksPage.getContent().stream().map(book -> {
+			book.setFileUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK + "/file/"
+					+ book.getBookId());
+			book.setFile(null); // Clear file to save memory
+			book.setThumbnailUrl(getBaseUrl(request) + AppStrings.ENDPOINT_API + AppStrings.ENDPOINT_BOOK
+					+ "/thumbnail/" + book.getBookId());
+			book.setThumbnail(null); // Clear thumbnail to save memory
+			return book;
+		}).collect(Collectors.toList());
 
-	    return new PageImpl<>(modifiedBooks, pageable, booksPage.getTotalElements());
+		return new PageImpl<>(modifiedBooks, pageable, booksPage.getTotalElements());
 	}
-
 
 	public static ResponseEntity<MessageModel> getResponseEntity(String msg, HttpStatusCode code) {
 		return new ResponseEntity<MessageModel>(new MessageModel(msg), code);
@@ -138,5 +140,12 @@ public class LibraryService {
 		String url = request.getRequestURL().toString();
 		String baseUrl = url.replace(request.getServletPath(), "");
 		return baseUrl;
+	}
+
+	public ResponseEntity<MessageModel> batchDelete(List<Long> ids) {
+        Iterable<Long> idIterable = ids;
+
+		repo_library.deleteAllByIdInBatch(idIterable);
+		return getResponseEntity("Deleted Books Successfully",HttpStatus.OK);
 	}
 }
